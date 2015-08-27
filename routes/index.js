@@ -1,5 +1,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
+var crypto = require('crypto');
+
 var model = require('../models/model');
 
 var User = model.User;
@@ -22,21 +24,54 @@ router.get('/reg', function(req, res, next) {
 });
 
 router.post('/reg', function(req, res, next) {
-	console.log(req.body);
-	var data = new User({
-		name: req.body.name,
-		password: req.body.password,
-		passwordRepeat: req.body.passwordRepeat,
-		email: req.body.email
-	});
+	var name = req.body.name,
+		password = req.body.password,
+		passwordRepeat = req.body.passwordRepeat;
 
-	console.log('---------create---------');
-	data.save(function(err, doc) {
+	//检查两次输入的密码是否一致
+	if(password != passwordRepeat) {
+		console.log('error', '两次输入的密码不一致！');
+		return res.redirect('/reg');
+	}
+
+
+
+	//检查用户名是否已经存在
+	User.findOne({name:name}, function(err, user) {
 		if(err) {
-			res.send(err);
-		} else {
-			res.redirect('/');//跳转
+			console.log('error', err);
+			return res.redirect('/reg');
 		}
+
+		if(user) {
+			console.log(user);
+			console.log('error', '用户名已经存在');
+			return res.redirect('/reg');
+		}
+
+		//对密码进行md5加密
+		var md5 = crypto.createHash('md5'),
+			md5password = md5.update(password).digest('hex');
+
+		var newUser = new User({
+			name: name,
+			password: md5password,
+			email: req.body.email
+		});
+
+		newUser.save(function(err, doc) {
+			if(err) {
+				console.log('error', err);
+				return res.redirect('/reg');
+			}
+			console.log('success', '注册成功！');
+			newUser.password = null;
+			delete newUser.password;
+			console.log("---" + newUser);
+			req.session.user = newUser;
+			console.log("+++" + newUser);
+			return res.redirect('/');
+		});
 	});
 });
 
@@ -59,13 +94,11 @@ router.post('/login', function(req, res, next) {
 			return next(err);
 		}
 		if(!user) {
-			console.log('用户不存在');
+			req.flash('info', '用户不存在');
 			return res.redirect('/login');
 		}
 		if(user.password !== password) {
-			console.log('------user.password: '+ user.password +" + "+ typeof user.password);
-			console.log('------password: ' + password +" + "+ typeof password);
-			console.log('密码错误');
+			req.flash('error', '密码错误');
 			return res.redirect('/login');	
 		}
 		return res.redirect('/');
