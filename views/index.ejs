@@ -1,0 +1,9 @@
+<%- include header %>
+<% datas.forEach(function(data) { %>
+	<h1><%= data.title %></h1>
+	<p><%= data.tag %></p>
+	<p><%= data.author %></p>
+	<p><%= data.createTime %></p>
+	<p><%= data.des %></p>
+<% }); %>
+<%- include footer%>
