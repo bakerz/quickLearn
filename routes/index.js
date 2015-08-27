@@ -81,7 +81,6 @@ router.post('/post', function(req, res, next) {
 		title: req.body.title,
 		author: req.body.author,
 		tag: req.body.tag,
-		des: req.body.des,
 		content: req.body.content
 	});
 
@@ -95,6 +94,7 @@ router.post('/post', function(req, res, next) {
 });
 
 router.get('/logout', function(req, res, next) {
+	res.redirect('/');
 });
 
 

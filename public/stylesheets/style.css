@@ -3,9 +3,7 @@
 	margin: 0;
 }
 body {
-	width: 600px;
 	margin: 2em auto;
-	padding: 0 2em;
 	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -14,10 +12,15 @@ p {
 	margin: 1em 0;
 }
 
-header {
+#header {
+	text-align: center;
 	padding: .5em 0;
 	border-bottom: 1px solid #ccc;
 }
+#content {
+	text-align: center;
+}
+/**
 
 nav {
 	float: left;
@@ -27,7 +30,6 @@ nav {
 	width: 9em;
 	text-align: right;
 }
-
 nav a {
 	display: block;
 	text-decoration: none;
@@ -40,7 +42,7 @@ nav a:hover {
 	color: #f9f9f9;
 	-webkit-transition: color .2s linear;
 }
-
+**/
 article {
 	font-size: 16px;
 	padding-top: .5em;

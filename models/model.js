@@ -16,7 +16,6 @@ var articleSchema = new Schema({
 	title: String,
 	author: String,
 	tag: String,
-	des: String,
 	content: String,
 	createTime: {
 		type: Date,
