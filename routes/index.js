@@ -1,8 +1,10 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var crypto = require('crypto');
+var moment = require('moment');
 
 var model = require('../models/model');
+var checkIsLogin = require('./checkIsLogin');
 
 var User = model.User;
 var Article = model.Article;
@@ -10,8 +12,10 @@ var Article = model.Article;
 var router = express.Router();
 
 /* GET home page. */
+/*-----------------------------------*\
+|-------------主页index---------------|
+\*-----------------------------------*/
 router.get('/', function(req, res, next) {
-	console.log(req.session.flash);
 	Article.find(function(err, doc) {
 		res.render('index', { 
 			title: '主页' ,
@@ -24,6 +28,10 @@ router.get('/', function(req, res, next) {
 	});
 });
 
+/*-----------------------------------*\
+|-------------注册register------------|
+\*-----------------------------------*/
+router.get('/reg', checkIsLogin.login);
 router.get('/reg', function(req, res, next) {
 	res.render('register', { 
 		title: '注册',
@@ -41,7 +49,7 @@ router.post('/reg', function(req, res, next) {
 
 	//检查两次输入的密码是否一致
 	if(password != passwordRepeat) {
-		console.log('error', '两次输入的密码不一致！');
+		req.flash('error', '两次输入的密码不一致！');
 		return res.redirect('/reg');
 	}
 
@@ -53,7 +61,6 @@ router.post('/reg', function(req, res, next) {
 		}
 
 		if(user) {
-			console.log(user);
 			req.flash('error', '用户名已经存在');
 			return res.redirect('/reg');
 		}
@@ -82,9 +89,12 @@ router.post('/reg', function(req, res, next) {
 	});
 });
 
+/*-----------------------------------*\
+|-------------登录login---------------|
+\*-----------------------------------*/
+router.get('/login', checkIsLogin.login);
 router.get('/login', function(req, res, next) {
 	User.find(function(err, doc) {
-		console.log(req.session.flash);
 		res.render('login', {
 			title: '登录',
 			user: req.session.user,
@@ -107,7 +117,6 @@ router.post('/login', function(req, res, next) {
 		}
 		if(!user) {
 			req.flash('error', '用户不存在！');
-			console.log('用户不存在！');
 			return res.redirect('/login');
 		}
 		//对密码进行md5加密
@@ -115,7 +124,6 @@ router.post('/login', function(req, res, next) {
 			md5password = md5.update(password).digest('hex');
 		if(user.password !== md5password) {
 			req.flash('error', '密码错误！');
-			console.log('密码错误');
 			return res.redirect('/login');	
 		}
 		req.flash('success', '登录成功！');
@@ -126,14 +134,17 @@ router.post('/login', function(req, res, next) {
 	});
 });
 
+/*-----------------------------------*\
+|-------------发表post----------------|
+\*-----------------------------------*/
+router.get('/post', checkIsLogin.notLogin);
 router.get('/post', function(req, res, next) {
-	console.log(req.session.flash);
 	res.render('post', { 
 		title: '发表',
 		user: req.session.user,
 		info: req.flash('info').toString(),
 		success: req.flash('success').toString(),
-		error: req.flash('error').toString(),
+		error: req.flash('error').toString()
 	});
 });
 
@@ -151,15 +162,17 @@ router.post('/post', function(req, res, next) {
 			return res.redirect('/post');
 		}
 		req.flash('success', '文章发表成功！')
-		res.redirect('/');
+		return res.redirect('/');
 	})
 });
 
+/*-----------------------------------*\
+|-------------退出logout--------------|
+\*-----------------------------------*/
 router.get('/logout', function(req, res, next) {
-	console.log(req.session.flash);
 	req.session.user = null;
 	req.flash('success', '退出登录成功！');
-	res.redirect('/login');
+	return res.redirect('/login');
 });
 
 module.exports = router;

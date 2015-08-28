@@ -1,9 +1,15 @@
 <%- include header %>
 <% datas.forEach(function(data) { %>
-	<h1><%= data.title %></h1>
-	<p><%= data.tag %></p>
-	<p><%= data.author %></p>
-	<p><%= data.createTime %></p>
-	<p><%= data.content %></p>
+	<div class="article">
+		<h1><%= data.title %></h1>
+		<p>
+			<span><%= data.author %></span>|
+			<span><%= data.createTime %></span>|
+			<span class="tag"><%= data.tag %></span>
+		</p>
+		<p></p>
+		<p></p>
+		<p><%= data.content %></p>
+	</div>
 <% }); %>
 <%- include footer%>

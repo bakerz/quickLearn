@@ -29,6 +29,15 @@ p {
 	margin: 3em auto; 
 	text-align: center;
 }
+.article {
+	border-bottom: 1px solid #ccc;
+}
+.tag {
+	background-color: #ccc;
+	color: #fff;
+	padding: 6px 12px;
+	border-radius: 5px;
+}
 form {
 	width: 400px;
 	margin: 0 auto;
