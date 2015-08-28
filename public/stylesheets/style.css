@@ -10,7 +10,15 @@ p {
 	line-height: 24px;
 	margin: 1em 0;
 }
-
+.alert-box {
+	width: 600px;
+	position: absolute;
+	right: -webkit-calc((100% - 600px) / 2);
+	right: -moz-calc((100% - 600px) / 2);
+	right: -ms-calc((100% - 600px) / 2);
+	right: -o-calc((100% - 600px) / 2);
+	right: calc((100% - 600px) / 2);
+}
 #header {
 	text-align: center;
 	padding: .5em 0;
