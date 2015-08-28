@@ -34,8 +34,6 @@ router.post('/reg', function(req, res, next) {
 		return res.redirect('/reg');
 	}
 
-
-
 	//检查用户名是否已经存在
 	User.findOne({name:name}, function(err, user) {
 		if(err) {
@@ -67,9 +65,11 @@ router.post('/reg', function(req, res, next) {
 			console.log('success', '注册成功！');
 			newUser.password = null;
 			delete newUser.password;
+			console.log("+++sessoin.user+++"+req.session.user);
 			console.log("---" + newUser);
 			req.session.user = newUser;
 			console.log("+++" + newUser);
+			console.log("+++sessoin.user+++"+req.session.user);
 			return res.redirect('/');
 		});
 	});
