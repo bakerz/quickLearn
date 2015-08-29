@@ -1,6 +1,5 @@
 <%- include header %>
-	<script src="/views-js/index.js"></script>
-	<script><% moment.locale('zh-cn') %></script>
+<script><% moment.locale('zh-cn') %></script>
 <% datas.forEach(function(data) { %>
 	<div class="article">
 		<a href="/<%= data.author %>/<%= data._id %>">

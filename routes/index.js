@@ -168,7 +168,7 @@ router.post('/post', function(req, res, next) {
 });
 
 /*-----------------------------------*\
-|----------文章/u/:time/:article--------|
+|----------文章/:author/:_id--------|
 \*-----------------------------------*/
 router.get('/:author/:_id', function(req, res, next) {
 	Article.findOne({
@@ -192,18 +192,21 @@ router.get('/:author/:_id', function(req, res, next) {
 })
 
 /*-----------------------------------*\
-|----------用户信息/u/:username-------|
+|----------用户信息/:username-------|
 \*-----------------------------------*/
-router.get('/:username', function(req, res, next) {
-
-		res.render('user', {
-			title: '用户',
+router.get('/:author', function(req, res, next) {
+	Article.find({author: req.params.author}, function(err, art) {
+		console.log(art);
+		res.render('user', { 
+			title: '主页' ,
 			user: req.session.user,
 			info: req.flash('info').toString(),
 			success: req.flash('success').toString(),
 			error: req.flash('error').toString(),
+			arts: art,
 			moment: moment
 		});
+	});
 });
 
 /*-----------------------------------*\
