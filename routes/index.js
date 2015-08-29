@@ -23,7 +23,8 @@ router.get('/', function(req, res, next) {
 			info: req.flash('info').toString(),
 			success: req.flash('success').toString(),
 			error: req.flash('error').toString(),
-			datas: doc
+			datas: doc,
+			moment: moment
 		});
 	});
 });

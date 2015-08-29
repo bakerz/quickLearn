@@ -32,11 +32,21 @@ p {
 .article {
 	border-bottom: 1px solid #ccc;
 }
+.author {
+	margin: 0 10px;
+}
+.create-time {
+	margin: 0 10px;
+}
 .tag {
 	background-color: #ccc;
 	color: #fff;
 	padding: 6px 12px;
 	border-radius: 5px;
+	margin: 0 10px;
+}
+.text-bold {
+	font-weight: bold;
 }
 form {
 	width: 400px;
