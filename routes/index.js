@@ -152,7 +152,7 @@ router.get('/post', function(req, res, next) {
 router.post('/post', function(req, res, next) {
 	var data = new Article({
 		title: req.body.title,
-		author: req.body.author,
+		author: req.session.user.username,
 		tag: req.body.tag,
 		content: req.body.content
 	});
@@ -165,6 +165,45 @@ router.post('/post', function(req, res, next) {
 		req.flash('success', '文章发表成功！')
 		return res.redirect('/');
 	})
+});
+
+/*-----------------------------------*\
+|----------文章/u/:time/:article--------|
+\*-----------------------------------*/
+router.get('/:author/:_id', function(req, res, next) {
+	Article.findOne({
+		author: req.params.author,
+		_id: req.params._id
+	}, function(err, art) {
+			if(err) {
+				req.flash('error', '抱歉，因不明原因，此文章已从银河系消失！');
+				return res.redirect('/');
+			}
+			res.render('article', {
+				title: '文章内容',
+				user: req.session.user,
+				info: req.flash('info').toString(),
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString(),
+				moment: moment,
+				art: art
+			});
+		});
+})
+
+/*-----------------------------------*\
+|----------用户信息/u/:username-------|
+\*-----------------------------------*/
+router.get('/:username', function(req, res, next) {
+
+		res.render('user', {
+			title: '用户',
+			user: req.session.user,
+			info: req.flash('info').toString(),
+			success: req.flash('success').toString(),
+			error: req.flash('error').toString(),
+			moment: moment
+		});
 });
 
 /*-----------------------------------*\

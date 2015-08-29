@@ -10,6 +10,12 @@ p {
 	line-height: 24px;
 	margin: 1em 0;
 }
+.navbar {
+	margin-bottom: 50px;
+}
+#container {
+	padding-top: 60px;
+}
 .alert-box {
 	width: 600px;
 	position: absolute;
@@ -19,13 +25,13 @@ p {
 	right: -o-calc((100% - 600px) / 2);
 	right: calc((100% - 600px) / 2);
 }
-#header {
+.page-title {
 	text-align: center;
 	padding: .5em 0;
 	border-bottom: 1px solid #ccc;
 }
-#content {
-	width: 800px;
+.con-box {
+	max-width: 800px;
 	margin: 3em auto; 
 	text-align: center;
 }

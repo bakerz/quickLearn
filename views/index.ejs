@@ -1,15 +1,15 @@
 <%- include header %>
-<script src="/views-js/index.js"></script>
+	<script src="/views-js/index.js"></script>
 	<script><% moment.locale('zh-cn') %></script>
 <% datas.forEach(function(data) { %>
 	<div class="article">
-		<a href="/<%= data.id %>">
+		<a href="/<%= data.author %>/<%= data._id %>">
 			<h1><%= data.title %></h1>
 		</a>
 		<p>
 			<span class="author">
 				<span class="text-bold">作者:</span>
-				<%= data.author %>
+				<a href="/<%= data.author %>"><%= data.author %></a>
 			</span>|
 			<span class="create-time">
 				<span class="text-bold">时间:</span>
