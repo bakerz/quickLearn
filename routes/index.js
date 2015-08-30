@@ -257,11 +257,11 @@ router.get('/edit/:_id', function(req, res, next) {
 });
 
 router.post('/edit/:_id', function(req, res, next) {
-	console.log(req.params._id, req.body.title, req.body.tag, req.body.content);
 	Article.update({_id: req.params._id},{
 		title: req.body.title,
 		tag: req.body.tag,
-		content: req.body.content
+		content: req.body.content,
+		createTime: Date.now()
 	}, function(err, art) {
 		if(err) {
 			req.flash('error', err);
