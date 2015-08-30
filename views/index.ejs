@@ -2,13 +2,13 @@
 <script><% moment.locale('zh-cn') %></script>
 <% datas.forEach(function(data) { %>
 	<div class="article">
-		<a href="/<%= data.author %>/<%= data._id %>">
+		<a href="/u/<%= data.author %>/<%= data._id %>">
 			<h1><%= data.title %></h1>
 		</a>
 		<p>
 			<span class="author">
 				<span class="text-bold">作者:</span>
-				<a href="/<%= data.author %>"><%= data.author %></a>
+				<a href="/u/<%= data.author %>"><%= data.author %></a>
 			</span>|
 			<span class="create-time">
 				<span class="text-bold">时间:</span>

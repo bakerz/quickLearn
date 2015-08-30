@@ -170,7 +170,7 @@ router.post('/post', function(req, res, next) {
 /*-----------------------------------*\
 |----------文章/:author/:_id--------|
 \*-----------------------------------*/
-router.get('/:author/:_id', function(req, res, next) {
+router.get('/u/:author/:_id', function(req, res, next) {
 	Article.findOne({
 		author: req.params.author,
 		_id: req.params._id
@@ -192,19 +192,44 @@ router.get('/:author/:_id', function(req, res, next) {
 })
 
 /*-----------------------------------*\
-|----------用户信息/:username-------|
+|----------用户信息/:username---------|
 \*-----------------------------------*/
-router.get('/:author', function(req, res, next) {
-	Article.find({author: req.params.author}, function(err, art) {
-		console.log(art);
+router.get('/u/:author', function(req, res, next) {
+	Article.find({author: req.params.author}, function(err, arts) {
+		if(err) {
+			req.flash('error', err);
+			return res.redirect('/');
+		}
 		res.render('user', { 
-			title: '主页' ,
+			title: req.params.author,
 			user: req.session.user,
 			info: req.flash('info').toString(),
 			success: req.flash('success').toString(),
 			error: req.flash('error').toString(),
-			arts: art,
-			moment: moment
+			moment: moment,
+			arts: arts
+		});
+	});
+});
+
+/*-----------------------------------*\
+|------------模糊查询/search----------|
+\*-----------------------------------*/
+router.get('/search', function(req, res, next) {
+	var title = new RegExp(req.query.title, "i");
+	Article.find({title: title}, function(err, arts) {
+		if(err) {
+			req.flash('error', err);
+			return res.redirect('/search');
+		}
+		res.render('search', {
+			title: '查询结果',
+			user: req.session.user,
+			info: req.flash('info').toString(),
+			success: req.flash('success').toString(),
+			error: req.flash('error').toString(),
+			moment: moment,
+			arts: arts
 		});
 	});
 });
