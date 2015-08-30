@@ -38,6 +38,15 @@ p {
 .article {
 	border-bottom: 1px solid #ccc;
 }
+.edit,
+.remove {
+	margin: 5px;
+}
+.control:after {
+	content: '';
+	display: block;
+	clear: both;
+}
 .author {
 	margin: 0 10px;
 }

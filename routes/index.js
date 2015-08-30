@@ -235,6 +235,27 @@ router.get('/search', function(req, res, next) {
 });
 
 /*-----------------------------------*\
+|-------------编辑/edit/:_id----------|
+\*-----------------------------------*/
+router.get('/edit/:_id', function(req, res, next) {
+
+});
+
+/*-----------------------------------*\
+|------------删除/delete/:_id---------|
+\*-----------------------------------*/
+router.get('/remove/:_id', function(req, res, next) {
+	Article.remove({_id: req.params._id}, function(err) {
+		if(err) {
+			req.flash('error', err);
+		} else {
+			req.flash('success', '文章删除成功！');
+		}
+		return res.redirect('/u/' + req.session.user.username);
+	})
+});
+
+/*-----------------------------------*\
 |-------------退出logout--------------|
 \*-----------------------------------*/
 router.get('/logout', function(req, res, next) {
