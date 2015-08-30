@@ -135,6 +135,74 @@ router.post('/login', function(req, res, next) {
 	});
 });
 
+
+/*-----------------------------------*\
+|----------用户信息/:username---------|
+\*-----------------------------------*/
+router.get('/u/:author', function(req, res, next) {
+	Article.find({author: req.params.author}, function(err, arts) {
+		if(err) {
+			req.flash('error', err);
+			return res.redirect('/');
+		}
+		res.render('user', { 
+			title: req.params.author,
+			user: req.session.user,
+			info: req.flash('info').toString(),
+			success: req.flash('success').toString(),
+			error: req.flash('error').toString(),
+			moment: moment,
+			arts: arts
+		});
+	});
+});
+
+/*-----------------------------------*\
+|----------文章/:author/:_id--------|
+\*-----------------------------------*/
+router.get('/u/:author/:_id', function(req, res, next) {
+	Article.findOne({
+		author: req.params.author,
+		_id: req.params._id
+	}, function(err, art) {
+			if(err) {
+				req.flash('error', '抱歉，因不明原因，此文章已从银河系消失！');
+				return res.redirect('/');
+			}
+			res.render('article', {
+				title: '文章内容',
+				user: req.session.user,
+				info: req.flash('info').toString(),
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString(),
+				moment: moment,
+				art: art
+			});
+		});
+});
+
+/*-----------------------------------*\
+|------------模糊查询/search----------|
+\*-----------------------------------*/
+router.get('/search', function(req, res, next) {
+	var title = new RegExp(req.query.title, "i");
+	Article.find({title: title}, function(err, arts) {
+		if(err) {
+			req.flash('error', err);
+			return res.redirect('/search');
+		}
+		res.render('search', {
+			title: '查询结果',
+			user: req.session.user,
+			info: req.flash('info').toString(),
+			success: req.flash('success').toString(),
+			error: req.flash('error').toString(),
+			moment: moment,
+			arts: arts
+		});
+	});
+});
+
 /*-----------------------------------*\
 |-------------发表post----------------|
 \*-----------------------------------*/
@@ -164,73 +232,6 @@ router.post('/post', function(req, res, next) {
 		}
 		req.flash('success', '文章发表成功！')
 		return res.redirect('/');
-	})
-});
-
-/*-----------------------------------*\
-|----------文章/:author/:_id--------|
-\*-----------------------------------*/
-router.get('/u/:author/:_id', function(req, res, next) {
-	Article.findOne({
-		author: req.params.author,
-		_id: req.params._id
-	}, function(err, art) {
-			if(err) {
-				req.flash('error', '抱歉，因不明原因，此文章已从银河系消失！');
-				return res.redirect('/');
-			}
-			res.render('article', {
-				title: '文章内容',
-				user: req.session.user,
-				info: req.flash('info').toString(),
-				success: req.flash('success').toString(),
-				error: req.flash('error').toString(),
-				moment: moment,
-				art: art
-			});
-		});
-})
-
-/*-----------------------------------*\
-|----------用户信息/:username---------|
-\*-----------------------------------*/
-router.get('/u/:author', function(req, res, next) {
-	Article.find({author: req.params.author}, function(err, arts) {
-		if(err) {
-			req.flash('error', err);
-			return res.redirect('/');
-		}
-		res.render('user', { 
-			title: req.params.author,
-			user: req.session.user,
-			info: req.flash('info').toString(),
-			success: req.flash('success').toString(),
-			error: req.flash('error').toString(),
-			moment: moment,
-			arts: arts
-		});
-	});
-});
-
-/*-----------------------------------*\
-|------------模糊查询/search----------|
-\*-----------------------------------*/
-router.get('/search', function(req, res, next) {
-	var title = new RegExp(req.query.title, "i");
-	Article.find({title: title}, function(err, arts) {
-		if(err) {
-			req.flash('error', err);
-			return res.redirect('/search');
-		}
-		res.render('search', {
-			title: '查询结果',
-			user: req.session.user,
-			info: req.flash('info').toString(),
-			success: req.flash('success').toString(),
-			error: req.flash('error').toString(),
-			moment: moment,
-			arts: arts
-		});
 	});
 });
 
@@ -238,7 +239,37 @@ router.get('/search', function(req, res, next) {
 |-------------编辑/edit/:_id----------|
 \*-----------------------------------*/
 router.get('/edit/:_id', function(req, res, next) {
+	Article.findOne({_id: req.params._id}, function(err, art) {
+		if(err) {
+			req.flash('error', err);
+			return res.redirect('back');
+		}
+		res.render('edit', {
+			title: '编辑',
+			user: req.session.user,
+			info: req.flash('info').toString(),
+			success: req.flash('success').toString(),
+			error: req.flash('error').toString(),
+			moment: moment,
+			art: art
+		});
+	});
+});
 
+router.post('/edit/:_id', function(req, res, next) {
+	console.log(req.params._id, req.body.title, req.body.tag, req.body.content);
+	Article.update({_id: req.params._id},{
+		title: req.body.title,
+		tag: req.body.tag,
+		content: req.body.content
+	}, function(err, art) {
+		if(err) {
+			req.flash('error', err);
+			return res.redirect('back');
+		}
+		req.flash('success', '文章编辑成功！');
+		return res.redirect('/u/' + req.session.user.username);
+	});
 });
 
 /*-----------------------------------*\
@@ -251,7 +282,7 @@ router.get('/remove/:_id', function(req, res, next) {
 		} else {
 			req.flash('success', '文章删除成功！');
 		}
-		return res.redirect('/u/' + req.session.user.username);
+		return res.redirect('back');
 	})
 });
 
