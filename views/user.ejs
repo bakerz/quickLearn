@@ -18,11 +18,13 @@
 		<p></p>
 		<p></p>
 		<p><%= art.content %></p>
-		<% if(art.author == user.username) { %>
-		<div class="control">
-				<a href="/remove/<%= art._id %>" class="pull-right remove">删除</a>
-				<a href="/edit/<%= art._id %>" class="pull-right edit">编辑</a>
-		</div>
+		<% if(user) { %>
+			<% if(art.author == user.username) { %>
+			<div class="control">
+					<a href="/remove/<%= art._id %>" class="pull-right remove">删除</a>
+					<a href="/edit/<%= art._id %>" class="pull-right edit">编辑</a>
+			</div>
+			<% } %>
 		<% } %>
 	</div>
 <% }); %>

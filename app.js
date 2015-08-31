@@ -4,6 +4,9 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+var flash = require('connect-flash');
 
 var mongoose = require('mongoose');
 
@@ -28,6 +31,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+  key: 'session',
+  secret: 'keboard cat',
+  cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},
+  store: new MongoStore({
+    db: 'datas',
+    mongooseConnection: mongoose.connection
+  }),
+  resave: false,
+  saveUninitialized: true
+}));
+
+app.use(flash());
+// error handlers
+
 app.use('/', routes);
 app.use('/users', users);
 
@@ -37,8 +55,6 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-
-// error handlers
 
 // development error handler
 // will print stacktrace
