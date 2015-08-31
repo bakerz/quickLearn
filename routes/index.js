@@ -15,8 +15,14 @@ var router = express.Router();
 /*-----------------------------------*\
 |-------------主页index---------------|
 \*-----------------------------------*/
+
+//asc 正序
+//desc 倒序
 router.get('/', function(req, res, next) {
-	Article.find(function(err, doc) {
+	Article
+	.find()
+	.sort('createTime')
+	.exec(function(err, doc) {
 		res.render('index', { 
 			title: '主页' ,
 			user: req.session.user,
@@ -111,7 +117,7 @@ router.post('/login', function(req, res, next) {
 	var username = req.body.username,
 		password = req.body.password;
 
-	User.findOne({username:username}, function(err, user) {
+	User.find({username:username}, function(err, user) {
 		if(err) {
 			req.flash("err", err);
 			return next(err);
@@ -137,10 +143,13 @@ router.post('/login', function(req, res, next) {
 
 
 /*-----------------------------------*\
-|----------用户信息/:username---------|
+|-------用户详情页面/u/:username------|
 \*-----------------------------------*/
 router.get('/u/:author', function(req, res, next) {
-	Article.find({author: req.params.author}, function(err, arts) {
+	Article
+	.find({author: req.params.author})
+	.sort({createTime:'asc'})
+	.exec(function(err, arts) {
 		if(err) {
 			req.flash('error', err);
 			return res.redirect('/');
@@ -158,7 +167,7 @@ router.get('/u/:author', function(req, res, next) {
 });
 
 /*-----------------------------------*\
-|----------文章/:author/:_id--------|
+|----------文章/u/:author/:_id--------|
 \*-----------------------------------*/
 router.get('/u/:author/:_id', function(req, res, next) {
 	Article.findOne({
@@ -186,7 +195,10 @@ router.get('/u/:author/:_id', function(req, res, next) {
 \*-----------------------------------*/
 router.get('/search', function(req, res, next) {
 	var title = new RegExp(req.query.title, "i");
-	Article.find({title: title}, function(err, arts) {
+	Article
+	.find({title: title})
+	.sort({createTime: 'asc'})
+	.exec(function(err, arts) {
 		if(err) {
 			req.flash('error', err);
 			return res.redirect('/search');
