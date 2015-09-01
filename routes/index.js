@@ -18,22 +18,32 @@ var router = express.Router();
 
 //asc | 1 正序 
 //desc | -1 倒序
+var page = 1;
 var pageSize = 5;
-var lastTime = new Date();
 router.get('/', function(req, res, next) {
-	console.log(Article.count());
+	page = req.query.page ? parseInt(req.query.page) : 1;
 	Article
-	.find()
-	.sort('-createTime')
-	.exec(function(err, doc) {
-		res.render('index', { 
-			title: '主页' ,
-			user: req.session.user,
-			info: req.flash('info').toString(),
-			success: req.flash('success').toString(),
-			error: req.flash('error').toString(),
-			datas: doc,
-			moment: moment
+	.count(function(err, total) {
+		Article
+		.find()
+		.skip((page - 1) * pageSize) 
+		.limit(pageSize)
+		.sort('-createTime')
+		.exec(function(err, doc) {
+			res.render('index', { 
+				title: '主页' ,
+				user: req.session.user,
+				info: req.flash('info').toString(),
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString(),
+				total: total,
+				page: page,
+				pageSize: pageSize,
+				isFirstPage: (page - 1) == 0,
+				isLastPage: ((page - 1) * pageSize + doc.length) == total,
+				datas: doc,
+				moment: moment
+			});
 		});
 	});
 });

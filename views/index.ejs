@@ -14,11 +14,41 @@
 				<span class="text-bold">时间:</span>
 				<%= moment(data.createTime).format('LL HH:mm:ss') %>
 			</span>|
-			<span class="tag"><%= data.tag %></span>
+			<span class="label label-info"><%= data.tag %></span>
 		</p>
 		<p></p>
 		<p></p>
 		<p><%= data.content %></p>
 	</div>
 <% }); %>
+<nav>
+	<ul class="pager">
+		<% if(!isFirstPage) { %>
+			<li class="previous">
+				<a href="?page=<%= page - 1 %>" aria-label="Previous">
+					<span aria-hidden="true">&laquo; Previous</span>
+				</a>
+			</li>
+		<% } %>
+		<% if(!isLastPage) { %>
+			<li class="next">
+				<a href="?page=<%= page + 1 %>" aria-label="Next">
+					<span aria-hidden="true">Next &raquo;</span>
+				</a>
+			</li>
+		<% } %>
+	</ul>
+</nav>
+
+<div id="pagination-box"></div>
+
+<div id="blog-data"
+data-total="<%= total %>"
+data-page="<%= page %>"
+data-pagesize="<%= pageSize %>"
+data-isfirstpage=<%= isFirstPage %>
+data-islastpage=<%= isLastPage %>
+></div>
+<script src="/views-js/index.js"></script>
+
 <%- include footer%>
