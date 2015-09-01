@@ -16,12 +16,15 @@ var router = express.Router();
 |-------------主页index---------------|
 \*-----------------------------------*/
 
-//asc 正序
-//desc 倒序
+//asc | 1 正序 
+//desc | -1 倒序
+var pageSize = 5;
+var lastTime = new Date();
 router.get('/', function(req, res, next) {
+	console.log(Article.count());
 	Article
 	.find()
-	.sort('createTime')
+	.sort('-createTime')
 	.exec(function(err, doc) {
 		res.render('index', { 
 			title: '主页' ,
@@ -148,7 +151,7 @@ router.post('/login', function(req, res, next) {
 router.get('/u/:author', function(req, res, next) {
 	Article
 	.find({author: req.params.author})
-	.sort({createTime:'asc'})
+	.sort({createTime: 'desc'})
 	.exec(function(err, arts) {
 		if(err) {
 			req.flash('error', err);
@@ -197,7 +200,7 @@ router.get('/search', function(req, res, next) {
 	var title = new RegExp(req.query.title, "i");
 	Article
 	.find({title: title})
-	.sort({createTime: 'asc'})
+	.sort({createTime: 'desc'})
 	.exec(function(err, arts) {
 		if(err) {
 			req.flash('error', err);
