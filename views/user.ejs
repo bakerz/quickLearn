@@ -28,4 +28,45 @@
 		<% } %>
 	</div>
 <% }); %>
+
+<nav>
+	<ul class="pager">
+		<% if(!isFirstPage) { %>
+			<li>
+				<a href="?page=1">
+					<span aria-hidden="true">首页</span>
+				</a>
+			</li>
+			<li>
+				<a href="?page=<%= page - 1 %>" aria-label="Previous">
+					<span aria-hidden="true">&laquo; 上一页</span>
+				</a>
+			</li>
+		<% } %>
+		<% if(!isLastPage) { %>
+			<li>
+				<a href="?page=<%= page + 1 %>" aria-label="Next">
+					<span aria-hidden="true">下一页 &raquo;</span>
+				</a>
+			</li>
+			<li>
+				<a href="?page=<%= Math.ceil(total/pageSize) %>">
+					<span aria-hidden="true">末页</span>
+				</a>
+			</li>
+		<% } %>
+	</ul>
+</nav>
+
+<div id="pagination-box"></div>
+
+<div id="blog-data"
+data-total="<%= total %>"
+data-page="<%= page %>"
+data-pagesize="<%= pageSize %>"
+data-isfirstpage=<%= isFirstPage %>
+data-islastpage=<%= isLastPage %>
+></div>
+<script src="/views-js/pagination.js"></script>
+
 <%- include footer %>

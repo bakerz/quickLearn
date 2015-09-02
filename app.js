@@ -34,7 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   key: 'session',
   secret: 'keboard cat',
-  cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},
+  cookie: {maxAge: 1000 * 60 * 60 * 24},//1day
   store: new MongoStore({
     db: 'datas',
     mongooseConnection: mongoose.connection

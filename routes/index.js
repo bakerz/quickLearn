@@ -19,7 +19,7 @@ var router = express.Router();
 //asc | 1 正序 
 //desc | -1 倒序
 var page = 1;
-var pageSize = 5;
+var pageSize = 1;
 router.get('/', function(req, res, next) {
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	Article
@@ -29,19 +29,18 @@ router.get('/', function(req, res, next) {
 		.skip((page - 1) * pageSize) 
 		.limit(pageSize)
 		.sort('-createTime')
-		.exec(function(err, doc) {
+		.exec(function(err, arts) {
 			res.render('index', { 
 				title: '主页' ,
 				user: req.session.user,
-				info: req.flash('info').toString(),
 				success: req.flash('success').toString(),
 				error: req.flash('error').toString(),
 				total: total,
 				page: page,
 				pageSize: pageSize,
 				isFirstPage: (page - 1) == 0,
-				isLastPage: ((page - 1) * pageSize + doc.length) == total,
-				datas: doc,
+				isLastPage: ((page - 1) * pageSize + arts.length) == total,
+				arts: arts,
 				moment: moment
 			});
 		});
@@ -56,7 +55,6 @@ router.get('/reg', function(req, res, next) {
 	res.render('register', { 
 		title: '注册',
 		user: req.session.user,
-		info: req.flash('info').toString(),
 		success: req.flash('success').toString(),
 		error: req.flash('error').toString()
 	});
@@ -118,7 +116,6 @@ router.get('/login', function(req, res, next) {
 		res.render('login', {
 			title: '登录',
 			user: req.session.user,
-			info: req.flash('info').toString(),
 			success: req.flash('success').toString(),
 			error: req.flash('error').toString(),
 			datas: doc
@@ -159,22 +156,33 @@ router.post('/login', function(req, res, next) {
 |-------用户详情页面/u/:username------|
 \*-----------------------------------*/
 router.get('/u/:author', function(req, res, next) {
+	page = req.query.page ? parseInt(req.query.page) : 1;
 	Article
-	.find({author: req.params.author})
-	.sort({createTime: 'desc'})
-	.exec(function(err, arts) {
-		if(err) {
-			req.flash('error', err);
-			return res.redirect('/');
-		}
-		res.render('user', { 
-			title: req.params.author,
-			user: req.session.user,
-			info: req.flash('info').toString(),
-			success: req.flash('success').toString(),
-			error: req.flash('error').toString(),
-			moment: moment,
-			arts: arts
+	.count({author: req.params.author})
+	.exec(function(err, total) {
+		Article
+		.find({author: req.params.author})
+		.skip((page - 1) * pageSize) 
+		.limit(pageSize)
+		.sort('-createTime')
+		.exec(function(err, arts) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			res.render('user', { 
+				title: req.params.author ,
+				user: req.session.user,
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString(),
+				total: total,
+				page: page,
+				pageSize: pageSize,
+				isFirstPage: (page - 1) == 0,
+				isLastPage: ((page - 1) * pageSize + arts.length) == total,
+				arts: arts,
+				moment: moment
+			});
 		});
 	});
 });
@@ -194,7 +202,6 @@ router.get('/u/:author/:_id', function(req, res, next) {
 			res.render('article', {
 				title: '文章内容',
 				user: req.session.user,
-				info: req.flash('info').toString(),
 				success: req.flash('success').toString(),
 				error: req.flash('error').toString(),
 				moment: moment,
@@ -207,23 +214,36 @@ router.get('/u/:author/:_id', function(req, res, next) {
 |------------模糊查询/search----------|
 \*-----------------------------------*/
 router.get('/search', function(req, res, next) {
-	var title = new RegExp(req.query.title, "i");
+	var query = req.query.title,
+		title = new RegExp(query, 'i');
+	page = req.query.page ? parseInt(req.query.page) : 1;
 	Article
-	.find({title: title})
-	.sort({createTime: 'desc'})
-	.exec(function(err, arts) {
-		if(err) {
-			req.flash('error', err);
-			return res.redirect('/search');
-		}
-		res.render('search', {
-			title: '查询结果',
-			user: req.session.user,
-			info: req.flash('info').toString(),
-			success: req.flash('success').toString(),
-			error: req.flash('error').toString(),
-			moment: moment,
-			arts: arts
+	.count({title: title})
+	.exec(function(err, total) {
+		Article
+		.find({title: title})
+		.skip((page - 1) * pageSize)
+		.limit(pageSize)
+		.sort('-createTime')
+		.exec(function(err, arts) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			res.render('search', { 
+				title: '查询结果',
+				user: req.session.user,
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString(),
+				search: query,
+				total: total,
+				page: page,
+				pageSize: pageSize,
+				isFirstPage: (page - 1) == 0,
+				isLastPage: ((page - 1) * pageSize + arts.length) == total,
+				arts: arts,
+				moment: moment
+			});
 		});
 	});
 });
@@ -236,7 +256,6 @@ router.get('/post', function(req, res, next) {
 	res.render('post', { 
 		title: '发表',
 		user: req.session.user,
-		info: req.flash('info').toString(),
 		success: req.flash('success').toString(),
 		error: req.flash('error').toString()
 	});
@@ -272,7 +291,6 @@ router.get('/edit/:_id', function(req, res, next) {
 		res.render('edit', {
 			title: '编辑',
 			user: req.session.user,
-			info: req.flash('info').toString(),
 			success: req.flash('success').toString(),
 			error: req.flash('error').toString(),
 			moment: moment,
