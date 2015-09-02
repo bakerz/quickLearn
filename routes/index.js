@@ -18,8 +18,9 @@ var router = express.Router();
 
 //asc | 1 正序 
 //desc | -1 倒序
+ 
 var page = 1;
-var pageSize = 1;
+var pageSize = 5;
 router.get('/', function(req, res, next) {
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	Article
@@ -30,8 +31,12 @@ router.get('/', function(req, res, next) {
 		.limit(pageSize)
 		.sort('-createTime')
 		.exec(function(err, arts) {
+			if(err) {
+				req.flash('error',err);
+				return res.redirect('/');
+			}
 			res.render('index', { 
-				title: '主页' ,
+				title: '主页',
 				user: req.session.user,
 				success: req.flash('success').toString(),
 				error: req.flash('error').toString(),
