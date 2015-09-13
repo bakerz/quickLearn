@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title><%= title %></title>
+		<style type="text/css">
+			nav ul li {
+				display: inline-block;
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<ul>
+				<li><a href="">注册</a></li>
+				<li><a href="">登录</a></li>
+				<li><a href="">发表</a></li>
+				<li><a href="">退出</a></li>
+			</ul>
+		</nav>
+		<%= title %>
+		<% arts.forEach(function(art) { %>
+			<%= art.title %>
+			<%= art.tags %>
+		<% }) %>
+	</body>
+</html>
