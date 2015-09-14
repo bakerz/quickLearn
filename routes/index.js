@@ -27,7 +27,7 @@ router.get('/', function(req, res, next) {
 	.count(function(err, total) {
 		Article
 		.find()
-		.skip((page - 1) * pageSize) 
+		.skip((page - 1) * pageSize)
 		.limit(pageSize)
 		.sort('-createTime')
 		.exec(function(err, arts) {
@@ -203,6 +203,17 @@ router.get('/u/:author/:_id', function(req, res, next) {
 			if(err) {
 				req.flash('error', '抱歉，因不明原因，此文章已从银河系消失！');
 				return res.redirect('/');
+			}
+			if(art) {
+				Article.update({
+					_id: req.params._id
+				},{
+					 $inc: {'pv': 1}
+				}, function(err) {
+					if(err) {
+						return req.flash('error', err);
+					}
+				});
 			}
 			res.render('article', {
 				title: '文章内容',

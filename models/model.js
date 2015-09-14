@@ -16,6 +16,10 @@ var articleSchema = new Schema({
 	author: String,
 	tag: String,
 	content: String,
+	pv: {
+		type: Number,
+		default: 0
+	},
 	createTime: {
 		type: Date,
 		default: Date.now
