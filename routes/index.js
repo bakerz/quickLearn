@@ -354,20 +354,4 @@ router.get('/logout', function(req, res, next) {
 	return res.redirect('/login');
 });
 
-router.get('/test', function(req, res, next) {
-	res.render('test', {
-		title: '首页',
-		arts: [{
-			title: 'title1',
-			tags: 'tags',
-			con: 'cong'
-		},{
-			title: 'title2',
-			tags: 'fdf',
-			con: 'sfsf'
-		}]
-	
-	});
-})
-
 module.exports = router;
