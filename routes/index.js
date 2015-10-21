@@ -132,7 +132,7 @@ router.post('/login', function(req, res, next) {
 	var username = req.body.username,
 		password = req.body.password;
 
-	User.find({username:username}, function(err, user) {
+	User.findOne({username:username}, function(err, user) {
 		if(err) {
 			req.flash("err", err);
 			return next(err);
